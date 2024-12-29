@@ -1,0 +1,86 @@
+return {
+  -- Treesitter for HTML and related languages
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = function(_, opts)
+      opts.ensure_installed =
+        vim.list_extend(opts.ensure_installed or {}, { "html", "css", "javascript", "typescript" })
+    end,
+  },
+
+  -- Emmet for fast HTML and CSS coding
+  {
+    "mattn/emmet-vim",
+    config = function()
+      vim.g.user_emmet_leader_key = "<C-y>" -- Trigger Emmet with Ctrl-y
+    end,
+  },
+
+  -- Prettier for formatting
+  {
+    "jose-elias-alvarez/null-ls.nvim",
+    opts = function(_, opts)
+      local null_ls = require("null-ls")
+      opts.sources = vim.list_extend(opts.sources or {}, {
+        null_ls.builtins.formatting.prettier.with({
+          filetypes = { "html", "css", "javascript", "typescript", "json" },
+        }),
+      })
+    end,
+  },
+
+  -- LSP for HTML, CSS, and JSON
+  {
+    "neovim/nvim-lspconfig",
+    dependencies = { "hrsh7th/cmp-nvim-lsp" }, -- Add dependency
+    opts = function(_, opts)
+      local lspconfig = require("lspconfig")
+      local capabilities = require("cmp_nvim_lsp").default_capabilities() -- Ensure cmp-nvim-lsp is loaded
+      lspconfig.html.setup({ capabilities = capabilities })
+      lspconfig.cssls.setup({ capabilities = capabilities })
+      lspconfig.jsonls.setup({ capabilities = capabilities })
+    end,
+  },
+
+  -- Autocompletion engine
+  {
+    "hrsh7th/nvim-cmp",
+    enabled = true,
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp", -- Ensure this is properly listed
+      "hrsh7th/cmp-buffer", -- Buffer source
+      "hrsh7th/cmp-path", -- Path source
+      "hrsh7th/cmp-cmdline", -- Command-line source
+    },
+    opts = function(_, opts)
+      local cmp = require("cmp")
+      opts.mapping = cmp.mapping.preset.insert({
+        ["<C-Space>"] = cmp.mapping.complete(),
+        ["<CR>"] = cmp.mapping.confirm({ select = true }),
+      })
+      opts.sources = cmp.config.sources({
+        { name = "nvim_lsp" },
+        { name = "buffer" },
+        { name = "path" },
+      })
+    end,
+  },
+
+  -- Skeleton file support
+  {
+    "nvim-lua/plenary.nvim", -- A dependency for file operations
+    config = function()
+      vim.api.nvim_create_autocmd("BufNewFile", {
+        pattern = "*.html",
+        callback = function()
+          local skeleton_path = vim.fn.stdpath("config") .. "/templates/html.skeleton"
+          if vim.fn.filereadable(skeleton_path) == 1 then
+            vim.cmd("0r " .. skeleton_path)
+          else
+            vim.notify("HTML skeleton file not found at: " .. skeleton_path, vim.log.levels.WARN)
+          end
+        end,
+      })
+    end,
+  },
+}
