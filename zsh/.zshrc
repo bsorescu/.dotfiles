@@ -16,6 +16,10 @@ eval "$(starship init zsh)"
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
+# Set up zsh-autosuggestions key binding
+bindkey '^ ' autosuggest-accept
+
+# set up eza anz zoxide alias
 alias eza='eza --git'
 alias ls='eza --git --icons --color=always'
 alias ll='eza -l --git --icons --color=always'
