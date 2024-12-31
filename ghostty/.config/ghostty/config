@@ -1,0 +1,7 @@
+theme = catppuccin-mocha
+
+#font-family = "JetBrainsMono Nerd"
+font-family = "JetBrainsMonoNL Nerd Font"
+
+keybind = ctrl+|=new_split:right
+keybind = ctrl+_=new_split:down
