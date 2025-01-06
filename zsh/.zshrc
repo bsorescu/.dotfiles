@@ -50,6 +50,4 @@ function y() {
 	rm -f -- "$tmp"
 }
 
-if [[ -n "$SSH_CONNECTION" ]]; then
-  export TERM=xterm-256color
-fi
+export TERM=xterm-256color
