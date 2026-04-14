@@ -10,3 +10,6 @@
 [submodule "zsh/.zsh/fzf-tab"]
 	path = zsh/.zsh/fzf-tab
 	url = https://github.com/Aloxaf/fzf-tab.git
+[submodule "zsh/.zsh/zsh-vi-mode"]
+	path = zsh/.zsh/zsh-vi-mode
+	url = https://github.com/jeffreytse/zsh-vi-mode.git

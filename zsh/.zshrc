@@ -34,7 +34,7 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':fzf-tab:*' fzf-flags --height=40% --layout=reverse --border
 
 # ── Keybindings ────────────────────────────────────────────────────────────
-bindkey -e
+# bindkey -e  # dezactivat — zsh-vi-mode gestioneaza modul
 
 # ── Environment ────────────────────────────────────────────────────────────
 export EDITOR=nvim
@@ -86,6 +86,13 @@ bindkey '^F' fzf-file-widget
 # ── Plugins (managed via stow + git submodules) ──────────────────────────
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zsh/zsh-autopair/autopair.zsh
+
+# zsh-vi-mode — vim motions pe command line (Esc = Normal mode)
+ZVM_INIT_MODE=sourcing          # compatibilitate cu alte plugins
+ZVM_VI_INSERT_ESCAPE_BINDKEY=jk # jk ca alternativa la Esc
+KEYTIMEOUT=1                    # fara delay la Esc
+source ~/.zsh/zsh-vi-mode/zsh-vi-mode.plugin.zsh
+
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh  # trebuie ultimul
 
 # ── Aliases — navigare ─────────────────────────────────────────────────────
@@ -190,11 +197,19 @@ function fuck() {
 }
 
 # ── Tool init ──────────────────────────────────────────────────────────────
-eval "$(zoxide init zsh)"
 eval "$(fzf --zsh)"
-eval "$(starship init zsh)"   # starship ultimul — modifica PS1
+eval "$(starship init zsh)"
+eval "$(zoxide init zsh)"     # zoxide ultimul — ca sa nu-i rescrie hook-ul chpwd
 
-# ── Keybindings finale (dupa toate plugin-urile si tool init) ─────────────
-bindkey '\t' autosuggest-accept     # Tab accepta autosuggestion
-bindkey '^ ' fzf-tab-complete       # Ctrl+Space deschide fzf completion
-bindkey '^R' fzf-history-widget     # Ctrl+R cauta in history cu fzf
+# ── Keybindings finale (dupa toate tool init-urile) ───────────────────────
+# zvm_after_lazy_keybindings se apeleaza dupa ce zsh-vi-mode face lazy init
+function zvm_after_lazy_keybindings() {
+  bindkey -M viins '\t' autosuggest-accept     # Tab accepta autosuggestion in insert mode
+  bindkey -M viins '^ ' fzf-tab-complete       # Ctrl+Space deschide fzf completion
+  bindkey -M viins '^R' fzf-history-widget     # Ctrl+R cauta in history cu fzf
+  bindkey -M vicmd '^R' fzf-history-widget     # Ctrl+R si in normal mode
+}
+# fallback — aplica si direct acum
+bindkey '\t' autosuggest-accept
+bindkey '^ ' fzf-tab-complete
+bindkey '^R' fzf-history-widget
