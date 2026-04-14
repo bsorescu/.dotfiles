@@ -198,6 +198,12 @@ function fuck() {
 
 # ── Tool init ──────────────────────────────────────────────────────────────
 eval "$(fzf --zsh)"
+# Starship — tema per OS (Tokyo Night pe macOS, Catppuccin pe Linux)
+if [[ "$(uname)" == "Darwin" ]]; then
+  export STARSHIP_CONFIG=~/.config/starship-tokyo-night.toml
+else
+  export STARSHIP_CONFIG=~/.config/starship-catppuccin.toml
+fi
 eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"     # zoxide ultimul — ca sa nu-i rescrie hook-ul chpwd
 
